@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: statefulset-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: canary
+  template:
+    metadata:
+      labels:
+        app: canary
+    spec:
+      containers:
+        - name: demo-pod
+          image: vvaarruunn/demo_live_ready:v3  # Replace with your Docker image name
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /ready  # Replace with the actual path that indicates readiness in your application
+              port: 3000
+            initialDelaySeconds: 1 # Delay before the first probe
+            periodSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /live  # Replace with the actual path that indicates readiness in your application
+              port: 3000
+            initialDelaySeconds: 1 # Delay before the first probe
+            periodSeconds: 1 
